@@ -1,0 +1,26 @@
+# Compiled Object Files
+*.o
+
+# Helper manuals
+*.pdf
+*.ps
+*.html
+*.tt
+
+# swap files
+*.swp
+*.swo
+
+# Other files
+*.log
+*.out
+*.err
+
+# folders
+misc/
+score/
+submit/
+output/
+
+# Compiled executable
+keyvalue
