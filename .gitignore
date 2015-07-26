@@ -15,6 +15,7 @@
 *.log
 *.out
 *.err
+tags
 
 # folders
 misc/
