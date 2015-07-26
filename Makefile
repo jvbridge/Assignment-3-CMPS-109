@@ -39,7 +39,7 @@ lis : ${ALLSOURCES}
 	mkpspdf ${LISTING} ${ALLSOURCES} ${DEPFILE}
 
 clean :
-	- rm ${OBJECTS} ${DEPFILE} core
+	- rm ${OBJECTS} ${DEPFILE}
 
 spotless : clean
 	- rm ${EXECBIN} ${LISTING} ${LISTING:.ps=.pdf}
@@ -58,4 +58,3 @@ again :
 ifeq (${NEEDINCL}, )
 include ${DEPFILE}
 endif
-
