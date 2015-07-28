@@ -64,23 +64,25 @@ string strip_whitespace(string& in){
 
    TRACE('s', "starting str: |" << str << "|");
 
+   // check if string is just whitespace
+   if(str.find_first_not_of (' ') == str.npos){
+      return "";
+   }
+
    // trim leading whitespace
-   size_t startpos = str.find_first_not_of(" \t");
+   size_t startpos = str.find_first_not_of(" ");
    if( string::npos != startpos ) {
+      TRACE('s', "found whitespace at beginning");
       str = str.substr( startpos );
    }
 
    TRACE('s', "front whitespace stripped: " << "|" << str << "|");
 
-   if (str.find_first_of(" ") == string::npos){
-      TRACE('s', "No more whitespace, returning!");
-      return str;
-   }
-
    // trim trailing spaces
    size_t endpos = str.find_last_not_of(" \t");
    if( string::npos != endpos ){
-      str = in.substr( 0, endpos+1 );
+      TRACE('s', "found whitespace at end");
+      str = str.substr( 0, endpos+1 );
    }
    TRACE('s', "back whitespace stripped: " << "|" << str << "|");
 
@@ -94,7 +96,7 @@ string strip_whitespace(string& in){
  */
 void read_line(string& line){
 
-   TRACE ('m', "Line is: " << line);
+   TRACE ('s', "Line is: " << line);
 
    // check if the line is commented out first
    if (line[0] == '#'){
@@ -125,19 +127,20 @@ void read_line(string& line){
       return;
    }
 
+   TRACE('h', "equals_pos: " << equals_pos);
 
    // split string around = sign
    string first_half;
    string second_half;
 
    // get the halves of the strings
-   if (equals_pos != 0){
-      first_half = line.substr(0, equals_pos - 1);
+   // if (equals_pos != 0){
+      first_half = line.substr(0, equals_pos);
       second_half = line.substr(equals_pos + 1, line.size());
-   } else{
-      first_half = "";
-      second_half = line.substr(equals_pos + 1, line.size());
-   }
+   // } else{
+   //    first_half = "";
+   //    second_half = line.substr(equals_pos + 1, line.size());
+   // }
 
    TRACE ('s', "first_half: " << first_half);
    TRACE ('s', "second_half: " << second_half);
@@ -165,7 +168,7 @@ void read_line(string& line){
    }
 
    if (first_half.empty()){
-      TRACE('m', "Assinging all keys to be: " << second_half);
+      TRACE('m', "printing all keys with value: " << second_half);
       // TODO make function work
       // assign_all(second_half);
       return;
