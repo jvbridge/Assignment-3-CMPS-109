@@ -249,7 +249,7 @@ int main (int argc, char** argv) {
       // make a pair, the second member is the filename, the second is
       // the argument number
       str_str_pair pair (*argp, to_string<int> (argp - argv));
-      cout << "Before insert: " << pair << endl;
+      // cout << "Before insert: " << pair << endl;
       test.insert (pair);
    }
 
@@ -257,7 +257,7 @@ int main (int argc, char** argv) {
    // use it to iterate over the map, printing it to cout
    for (str_str_map::iterator itor = test.begin();
         itor != test.end(); ++itor) {
-      cout << "During iteration: " << *itor << endl;
+      // cout << "During iteration: " << *itor << endl;
 
       // check if the file exists, complain if it doesn't
       string filename = (*itor).first;
