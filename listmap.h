@@ -33,11 +33,11 @@ class listmap {
       listmap& operator= (const listmap&);
       ~listmap();
       iterator insert (const value_type&);
-      iterator find (const key_type&) const;
+      iterator find (const key_type&);
       iterator erase (iterator position);
       iterator begin() { return anchor()->next; }
       iterator end() { return anchor(); }
-      bool empty() const { return begin() == end(); }
+      bool empty() { return begin() == end(); }
 };
 
 
@@ -60,4 +60,3 @@ class listmap<Key,Value,Less>::iterator {
 
 #include "listmap.tcc"
 #endif
-
