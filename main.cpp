@@ -53,15 +53,6 @@ void scan_options (int argc, char** argv) {
 //////////////////////////
 
 // function copied from stack overflow
-// http://stackoverflow.com/questions/83439/
-template<typename T, typename P>
-T remove_if(T beg, T end, P pred){
-   T dest = beg;
-   for (T itr = beg;itr != end; ++itr)
-      if (!pred(*itr))
-         *(dest++) = *itr;
-   return dest;
-}
 
 /**
  * Helper fuction that strips out all the whitespace from the ends
