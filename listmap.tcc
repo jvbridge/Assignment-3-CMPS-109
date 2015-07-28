@@ -48,16 +48,23 @@ template <typename Key, typename Value, class Less>
 typename listmap<Key,Value,Less>::iterator
 listmap<Key,Value,Less>::insert (const value_type& pair) {
    TRACE ('l', &pair << "->" << pair);
-
+   TRACE ('f', "inserting: " << pair);
    // pointer that to make things inserted properly
    listmap<Key,Value,Less>::iterator it = begin();
 
+   TRACE ('f', "list before insert: ");
+   for (listmap<Key,Value,Less>::iterator itor = begin();
+   itor != end(); ++itor){
+      TRACE ('f', itor->first << " = " << itor->second);
+   }
+
    // check if the list is empty, and handle that case first
    if (empty()){
+      TRACE ('f', "list is empty, making new node");
       node* tmp = new node(anchor(), anchor(), pair);
       // set the anchor pointers
-      it.where->prev = tmp;
-      it.where->next = tmp;
+      anchor_.next = tmp;
+      anchor_.prev = tmp;
       return iterator(tmp);
    }
 
@@ -65,6 +72,7 @@ listmap<Key,Value,Less>::insert (const value_type& pair) {
    while (it != end()){
       // if the key is already here, overwrite it, and return our it
       if (pair.first == it->first){
+         TRACE ('f', "found it here already, overwriting");
          it->second = pair.second;
          return it;
       }
@@ -72,6 +80,7 @@ listmap<Key,Value,Less>::insert (const value_type& pair) {
       // if our value is less than the current one, insert it as
       // appropriate
       if(less(pair.first, it->first)){
+         TRACE ('f', "inserting in the list");
          // make new node
          node* tmp = new node(it.where, it.where->prev, pair);
          // reassign pointers
@@ -84,9 +93,12 @@ listmap<Key,Value,Less>::insert (const value_type& pair) {
    }
 
    // oops! we've reached the end, time to append it to the end
-   node* tmp = new node(anchor(), it.where, pair);
-   it.where->next->prev = tmp; // technically sets anchor's prev
-   it.where->next = tmp;
+   TRACE ('f', "inserting at the end of the list");
+   node* tmp = new node(anchor(), it.where->prev, pair);
+   // TRACE ('f', "anchor prev = " << anchor_.prev);
+   it.where->prev->next = tmp;
+   anchor_.prev = tmp;
+   // TRACE ('f', "it.where->prev->next = " << anchor_.prev);
    return iterator(tmp);
 }
 
@@ -97,7 +109,7 @@ listmap<Key,Value,Less>::insert (const value_type& pair) {
 template <typename Key, typename Value, class Less>
 typename listmap<Key,Value,Less>::iterator
 listmap<Key,Value,Less>::find (const key_type& that) {
-   TRACE ('l', that);
+   TRACE ('f', "looking for: " << that);
    // start off by making an iterator that points at the front
    listmap::iterator it = begin();
 
@@ -105,9 +117,13 @@ listmap<Key,Value,Less>::find (const key_type& that) {
    // iterate down the list until you find a key that matches the key
    // being searched for, or reach the end
    while (it != end()){
-      if (it->first == that) break;
+      if (it->first == that) {
+         TRACE ('f', "Found: " << it->second);
+         break;
+      }
       ++it;
    }
+   if (it == end())TRACE ('f', "Didn't find " << that);
    return it;
 }
 

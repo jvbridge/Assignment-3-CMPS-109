@@ -89,12 +89,43 @@ string strip_whitespace(string& in){
    return str;
 }
 
+void print_all_values(string& value, str_str_map& test){
+   for (str_str_map::iterator it = test.begin();
+   it != test.end();
+   ++it){
+      if ((*it).second == value){
+         cout << (*it).first << " = " << value << endl;
+      }
+   }
+}
+
+void print_all_keys(str_str_map& test){
+   TRACE('f', "Printing all keys!");
+   for (str_str_map::iterator it = test.begin();
+   it != test.end();
+   ++it){
+         cout << (*it).first << " = " << (*it).second << endl;
+   }
+}
+
+void print_key(string& key, str_str_map& test){
+   TRACE('f', "Printing out key: " << key);
+   str_str_map::iterator tmp = test.find(key);
+   if (tmp == test.end()){
+      cout << "Error: key not found" << endl;
+      return;
+   }
+
+   cout << (*tmp).first << " = " << (*tmp).second << endl;
+
+}
+
 /**
  * Reads the line in and executes the appropriate code based on the
  * line's contents
  * @param line the command that is taken in
  */
-void read_line(string& line){
+void read_line(string& line, str_str_map& map_mod){
 
    TRACE ('s', "Line is: " << line);
 
@@ -121,9 +152,8 @@ void read_line(string& line){
          return;
       }
 
-      TRACE('m', "No equals sign, printing key: " << line);
-      // print_key(key);
-      // TODO put function here to print key
+      TRACE('m', "No equals sign, printing key: " << str);
+      print_key(str, map_mod);
       return;
    }
 
@@ -134,13 +164,8 @@ void read_line(string& line){
    string second_half;
 
    // get the halves of the strings
-   // if (equals_pos != 0){
-      first_half = line.substr(0, equals_pos);
-      second_half = line.substr(equals_pos + 1, line.size());
-   // } else{
-   //    first_half = "";
-   //    second_half = line.substr(equals_pos + 1, line.size());
-   // }
+   first_half = line.substr(0, equals_pos);
+   second_half = line.substr(equals_pos + 1, line.size());
 
    TRACE ('s', "first_half: " << first_half);
    TRACE ('s', "second_half: " << second_half);
@@ -152,9 +177,8 @@ void read_line(string& line){
 
    // if they're both just whitespace, print everything;
    if (second_half.empty() && first_half.empty()){
-      // TODO: make function work
       TRACE('m', "Printing all keys");
-      // print_all();
+      print_all_keys(map_mod);
       return;
    }
 
@@ -162,36 +186,39 @@ void read_line(string& line){
    // key indicated
    if (second_half.empty()){
       TRACE('m', "Deleting key: " << first_half);
-      // delete_key (key);
-      // TODO make function work
+      map_mod.erase(map_mod.find(first_half));
       return;
    }
 
    if (first_half.empty()){
       TRACE('m', "printing all keys with value: " << second_half);
-      // TODO make function work
-      // assign_all(second_half);
+      print_all_values(second_half, map_mod);
       return;
    }
 
    // both halves aren't empty. need to assing a value
-   TRACE('m', "Assinging key: " << first_half);
-   TRACE('m', "        to be: " << second_half);
+   TRACE('f', "  Assigning key: " << first_half);
+   TRACE('f', "Assigning value: " << second_half);
 
-   // TODO make function work
-   // assign(first_half, second_half);
-
+   str_str_pair tmp_pair (first_half, second_half);
+   map_mod.insert(tmp_pair);
+   TRACE('f', "list after insert: ");
+   for (str_str_map::iterator it = map_mod.begin();
+   it != map_mod.end();
+   ++it){
+      TRACE ('f', (*it).first << " = " << (*it).second);
+   }
 }
 
 void read_file(ifstream& file){
 
-   // string file_str((std::istreambuf_iterator<char>(my_file)), std::istreambuf_iterator<char>());
-
    string line;
    // get all characters from each line and do the operations
+   str_str_map map_mod;
+
    while (!file.eof()){
       getline(file, line);
-      read_line(line);
+      read_line(line, map_mod);
    }
 }
 
@@ -223,19 +250,6 @@ int main (int argc, char** argv) {
       // the argument number
       str_str_pair pair (*argp, to_string<int> (argp - argv));
       cout << "Before insert: " << pair << endl;
-
-      // test code!!!!
-      string filename = *argp;
-      ifstream my_file (filename);
-      if (my_file.is_open()){
-         TRACE ('m', *argp << " is a valid file");
-         // hand off operations to the helper functions
-         read_file(my_file);
-      } else {
-         cout << *argp << ": No such file or directory" << endl;
-      }
-
-
       test.insert (pair);
    }
 
@@ -246,20 +260,20 @@ int main (int argc, char** argv) {
       cout << "During iteration: " << *itor << endl;
 
       // check if the file exists, complain if it doesn't
-      // string filename = *itor;
-      // ifstream myfile (filename);
-      // if (myfile.is_open()){
-      //    TRACE ('m', *argp << " is a valid file");
-      //    // hand off operations to the helper functions
-      //    read_file(myfile);
-      // } else {
-      //    cout << *argp << ": No such file or directory";
-      // }
+      string filename = (*itor).first;
+      ifstream myfile (filename);
+      if (myfile.is_open()){
+         TRACE ('m', (*itor).first << " is a valid file");
+         // hand off operations to the helper functions
+         read_file(myfile);
+      } else {
+         cout << (*itor).first << ": No such file or directory";
+      }
    }
 
    // erase the iterator
-   // str_str_map::iterator itor = test.begin();
-   // test.erase (itor);
+   str_str_map::iterator itor = test.begin();
+   test.erase (itor);
 
    // print exit message and exit
    cout << "EXIT_SUCCESS" << endl;
